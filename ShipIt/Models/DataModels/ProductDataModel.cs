@@ -1,9 +1,9 @@
-﻿﻿using System;
+﻿using Npgsql;
+using ShipIt.Models.ApiModels;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Npgsql;
-using ShipIt.Models.ApiModels;
 
 namespace ShipIt.Models.DataModels
 {
@@ -45,7 +45,7 @@ namespace ShipIt.Models.DataModels
             foreach (var property in properties)
             {
                 var attribute = (DatabaseColumnName)property.GetCustomAttributes(typeof(DatabaseColumnName), false).First();
-                parameters.Add(new NpgsqlParameter("@" + attribute.Name,property.GetValue(this, null)));
+                parameters.Add(new NpgsqlParameter("@" + attribute.Name, property.GetValue(this, null)));
             }
 
             return parameters;

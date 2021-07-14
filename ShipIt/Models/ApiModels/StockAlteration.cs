@@ -1,8 +1,4 @@
-﻿﻿using ShipIt.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using ShipIt.Exceptions;
 
 namespace ShipIt.Models.ApiModels
 {
@@ -13,8 +9,8 @@ namespace ShipIt.Models.ApiModels
 
         public StockAlteration(int productId, int quantity)
         {
-            this.ProductId = productId;
-            this.Quantity = quantity;
+            ProductId = productId;
+            Quantity = quantity;
 
             if (quantity < 0)
             {

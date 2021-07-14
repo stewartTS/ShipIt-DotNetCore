@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Repositories;
@@ -39,7 +38,7 @@ namespace ShipIt.Controllers
         [HttpPost("")]
         public Response Post([FromBody] AddCompaniesRequest requestModel)
         {
-            List<Company> companiesToAdd = requestModel.companies;
+            var companiesToAdd = requestModel.companies;
 
             if (companiesToAdd.Count == 0)
             {
@@ -49,10 +48,10 @@ namespace ShipIt.Controllers
             Log.Info("Adding companies: " + companiesToAdd);
 
             _companyRepository.AddCompanies(companiesToAdd);
-            
+
             Log.Debug("Companies added successfully");
 
-            return new Response {Success = true};
+            return new Response { Success = true };
         }
     }
 }

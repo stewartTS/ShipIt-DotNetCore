@@ -1,10 +1,9 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
- using Microsoft.AspNetCore.Mvc;
- using ShipIt.Exceptions;
+﻿using Microsoft.AspNetCore.Mvc;
+using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Repositories;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShipIt.Controllers
 {
@@ -25,14 +24,14 @@ namespace ShipIt.Controllers
         [HttpPost("")]
         public void Post([FromBody] OutboundOrderRequestModel request)
         {
-            Log.Info(String.Format("Processing outbound order: {0}", request));
+            Log.Info(string.Format("Processing outbound order: {0}", request));
 
-            var gtins = new List<String>();
+            var gtins = new List<string>();
             foreach (var orderLine in request.OrderLines)
             {
                 if (gtins.Contains(orderLine.gtin))
                 {
-                    throw new ValidationException(String.Format("Outbound order request contains duplicate product gtin: {0}", orderLine.gtin));
+                    throw new ValidationException(string.Format("Outbound order request contains duplicate product gtin: {0}", orderLine.gtin));
                 }
                 gtins.Add(orderLine.gtin);
             }
@@ -68,7 +67,7 @@ namespace ShipIt.Controllers
             var orderLines = request.OrderLines.ToList();
             errors = new List<string>();
 
-            for (int i = 0; i < lineItems.Count; i++)
+            for (var i = 0; i < lineItems.Count; i++)
             {
                 var lineItem = lineItems[i];
                 var orderLine = orderLines[i];

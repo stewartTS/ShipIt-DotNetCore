@@ -1,27 +1,27 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ShipIt.Controllers;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Models.DataModels;
 using ShipIt.Repositories;
 using ShipItTest.Builders;
+using System.Collections.Generic;
 
 namespace ShipItTest
 {
     public class OutboundOrderControllerTests : AbstractBaseTest
     {
-        OutboundOrderController outboundOrderController = new OutboundOrderController(
+        private readonly OutboundOrderController outboundOrderController = new OutboundOrderController(
             new StockRepository(),
             new ProductRepository()
         );
-        StockRepository stockRepository = new StockRepository();
-        CompanyRepository companyRepository = new CompanyRepository();
-        ProductRepository productRepository = new ProductRepository();
-        EmployeeRepository employeeRepository = new EmployeeRepository();
+        private readonly StockRepository stockRepository = new StockRepository();
+        private readonly CompanyRepository companyRepository = new CompanyRepository();
+        private readonly ProductRepository productRepository = new ProductRepository();
+        private readonly EmployeeRepository employeeRepository = new EmployeeRepository();
 
-        private static Employee EMPLOYEE = new EmployeeBuilder().CreateEmployee();
-        private static Company COMPANY = new CompanyBuilder().CreateCompany();
+        private static readonly Employee EMPLOYEE = new EmployeeBuilder().CreateEmployee();
+        private static readonly Company COMPANY = new CompanyBuilder().CreateCompany();
         private static readonly int WAREHOUSE_ID = EMPLOYEE.WarehouseId;
 
         private Product product;

@@ -1,19 +1,19 @@
-﻿﻿using System;
-using System.Collections.Generic;
- using NUnit.Framework;
- using ShipIt.Controllers;
+﻿using NUnit.Framework;
+using ShipIt.Controllers;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Models.DataModels;
 using ShipIt.Repositories;
 using ShipItTest.Builders;
+using System;
+using System.Collections.Generic;
 
 namespace ShipItTest
 {
     public class ProductControllerTests : AbstractBaseTest
     {
-        ProductController productController = new ProductController(new ProductRepository());
-        ProductRepository productRepository = new ProductRepository();
+        private readonly ProductController productController = new ProductController(new ProductRepository());
+        private readonly ProductRepository productRepository = new ProductRepository();
 
         private const int WAREHOUSE_ID = 1;
 
@@ -25,7 +25,7 @@ namespace ShipItTest
         {
             onSetUp();
             var product = new ProductBuilder().CreateProductDatabaseModel();
-            productRepository.AddProducts(new List<ProductDataModel>() {product});
+            productRepository.AddProducts(new List<ProductDataModel>() { product });
             Assert.AreEqual(productRepository.GetProductByGtin(product.Gtin).Name, product.Name);
             Assert.AreEqual(productRepository.GetProductByGtin(product.Gtin).Gtin, product.Gtin);
         }
@@ -35,7 +35,7 @@ namespace ShipItTest
         {
             onSetUp();
             var productBuilder = new ProductBuilder().setGtin(GTIN);
-            productRepository.AddProducts(new List<ProductDataModel>() {productBuilder.CreateProductDatabaseModel()});
+            productRepository.AddProducts(new List<ProductDataModel>() { productBuilder.CreateProductDatabaseModel() });
             var result = productController.Get(GTIN);
 
             var correctProduct = productBuilder.CreateProduct();
@@ -77,7 +77,7 @@ namespace ShipItTest
         {
             onSetUp();
             var productBuilder = new ProductBuilder().setGtin(GTIN);
-            productRepository.AddProducts(new List<ProductDataModel>() {productBuilder.CreateProductDatabaseModel()});
+            productRepository.AddProducts(new List<ProductDataModel>() { productBuilder.CreateProductDatabaseModel() });
             var productRequest = productBuilder.CreateProductRequest();
 
             try

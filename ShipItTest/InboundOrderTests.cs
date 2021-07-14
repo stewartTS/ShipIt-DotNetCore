@@ -1,33 +1,32 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ShipIt.Controllers;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Models.DataModels;
 using ShipIt.Repositories;
 using ShipItTest.Builders;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShipItTest
 {
     public class InboundOrderControllerTests : AbstractBaseTest
     {
-        InboundOrderController inboundOrderController = new InboundOrderController(
+        private readonly InboundOrderController inboundOrderController = new InboundOrderController(
             new EmployeeRepository(),
             new CompanyRepository(),
             new ProductRepository(),
             new StockRepository()
         );
-        StockRepository stockRepository = new StockRepository();
-        CompanyRepository companyRepository = new CompanyRepository();
-        ProductRepository productRepository = new ProductRepository();
-        EmployeeRepository employeeRepository = new EmployeeRepository();
+        private readonly StockRepository stockRepository = new StockRepository();
+        private readonly CompanyRepository companyRepository = new CompanyRepository();
+        private readonly ProductRepository productRepository = new ProductRepository();
+        private readonly EmployeeRepository employeeRepository = new EmployeeRepository();
 
-        private static Employee OPS_MANAGER = new EmployeeBuilder().CreateEmployee();
-        private static Company COMPANY = new CompanyBuilder().CreateCompany();
+        private static readonly Employee OPS_MANAGER = new EmployeeBuilder().CreateEmployee();
+        private static readonly Company COMPANY = new CompanyBuilder().CreateCompany();
         private static readonly int WAREHOUSE_ID = OPS_MANAGER.WarehouseId;
-        private static readonly String GCP = COMPANY.Gcp;
+        private static readonly string GCP = COMPANY.Gcp;
 
         private Product product;
         private int productId;
@@ -113,7 +112,7 @@ namespace ShipItTest
 
             inboundOrderController.Post(inboundManifest);
 
-            var stock = stockRepository.GetStockByWarehouseAndProductIds(WAREHOUSE_ID, new List<int>() {productId})[productId];
+            var stock = stockRepository.GetStockByWarehouseAndProductIds(WAREHOUSE_ID, new List<int>() { productId })[productId];
             Assert.AreEqual(stock.held, quantity);
         }
 

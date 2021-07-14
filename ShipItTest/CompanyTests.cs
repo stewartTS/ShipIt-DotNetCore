@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ShipIt.Controllers;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Repositories;
 using ShipItTest.Builders;
+using System.Collections.Generic;
 
 namespace ShipItTest
 {
     public class CompanyControllerTests : AbstractBaseTest
     {
-        CompanyController companyController = new CompanyController(new CompanyRepository());
-        CompanyRepository companyRepository = new CompanyRepository();
+        private readonly CompanyController companyController = new CompanyController(new CompanyRepository());
+        private readonly CompanyRepository companyRepository = new CompanyRepository();
 
         private const string GCP = "0000346";
 

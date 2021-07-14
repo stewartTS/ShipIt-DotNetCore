@@ -1,10 +1,8 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Repositories;
+using System.Linq;
 
 namespace ShipIt.Controllers
 {
@@ -35,21 +33,21 @@ namespace ShipIt.Controllers
         [HttpGet("{warehouseId}")]
         public EmployeeResponse Get([FromRoute] int warehouseId)
         {
-            Log.Info(String.Format("Looking up employee by id: {0}", warehouseId));
+            Log.Info(string.Format("Looking up employee by id: {0}", warehouseId));
 
             var employees = _employeeRepository
                 .GetEmployeesByWarehouseId(warehouseId)
                 .Select(e => new Employee(e));
 
-            Log.Info(String.Format("Found employees: {0}", employees));
-            
+            Log.Info(string.Format("Found employees: {0}", employees));
+
             return new EmployeeResponse(employees);
         }
 
         [HttpPost("")]
         public Response Post([FromBody] AddEmployeesRequest requestModel)
         {
-            List<Employee> employeesToAdd = requestModel.Employees;
+            var employeesToAdd = requestModel.Employees;
 
             if (employeesToAdd.Count == 0)
             {
@@ -68,7 +66,7 @@ namespace ShipIt.Controllers
         [HttpDelete("")]
         public void Delete([FromBody] RemoveEmployeeRequest requestModel)
         {
-            string name = requestModel.Name;
+            var name = requestModel.Name;
             if (name == null)
             {
                 throw new MalformedRequestException("Unable to parse name from request parameters");

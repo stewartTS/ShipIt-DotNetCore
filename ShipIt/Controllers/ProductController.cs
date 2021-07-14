@@ -1,12 +1,12 @@
-﻿﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Models.DataModels;
 using ShipIt.Parsers;
 using ShipIt.Repositories;
 using ShipIt.Validators;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShipIt.Controllers
 {
@@ -55,7 +55,7 @@ namespace ShipIt.Controllers
 
             var dataProducts = parsedProducts.Select(p => new ProductDataModel(p));
             _productRepository.AddProducts(dataProducts);
-            
+
             Log.Debug("Products added successfully");
 
             return new Response() { Success = true };

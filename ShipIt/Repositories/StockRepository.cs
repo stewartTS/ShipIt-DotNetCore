@@ -1,11 +1,9 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using Npgsql;
+﻿using Npgsql;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Models.DataModels;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShipIt.Repositories
 {
@@ -24,21 +22,21 @@ namespace ShipIt.Repositories
 
         public int GetTrackedItemsCount()
         {
-            string sql = "SELECT COUNT(*) FROM stock";
+            var sql = "SELECT COUNT(*) FROM stock";
             return (int)QueryForLong(sql);
         }
 
         public int GetStockHeldSum()
         {
-            string sql = "SELECT SUM(hld) FROM stock";
+            var sql = "SELECT SUM(hld) FROM stock";
             return (int)QueryForLong(sql);
         }
 
         public IEnumerable<StockDataModel> GetStockByWarehouseId(int id)
         {
-            string sql = "SELECT p_id, hld, w_id FROM stock WHERE w_id = @w_id";
+            var sql = "SELECT p_id, hld, w_id FROM stock WHERE w_id = @w_id";
             var parameter = new NpgsqlParameter("@w_id", id);
-            string noProductWithIdErrorMessage = string.Format("No stock found with w_id: {0}", id);
+            var noProductWithIdErrorMessage = string.Format("No stock found with w_id: {0}", id);
             try
             {
                 return base.RunGetQuery(sql, reader => new StockDataModel(reader), noProductWithIdErrorMessage, parameter).ToList();
@@ -51,15 +49,15 @@ namespace ShipIt.Repositories
 
         public Dictionary<int, StockDataModel> GetStockByWarehouseAndProductIds(int warehouseId, List<int> productIds)
         {
-            string sql = string.Format("SELECT p_id, hld, w_id FROM stock WHERE w_id = @w_id AND p_id IN ({0})",
-                String.Join(",", productIds));
+            var sql = string.Format("SELECT p_id, hld, w_id FROM stock WHERE w_id = @w_id AND p_id IN ({0})",
+                string.Join(",", productIds));
             var parameter = new NpgsqlParameter("@w_id", warehouseId);
-            string noProductWithIdErrorMessage = string.Format("No stock found with w_id: {0} and p_ids: {1}",
-                warehouseId, String.Join(",", productIds));
+            var noProductWithIdErrorMessage = string.Format("No stock found with w_id: {0} and p_ids: {1}",
+                warehouseId, string.Join(",", productIds));
             var stock = base.RunGetQuery(sql, reader => new StockDataModel(reader), noProductWithIdErrorMessage, parameter);
             return stock.ToDictionary(s => s.ProductId, s => s);
         }
-            
+
         public void AddStock(int warehouseId, List<StockAlteration> lineItems)
         {
             var parametersList = new List<NpgsqlParameter[]>();
@@ -73,24 +71,24 @@ namespace ShipIt.Repositories
                     });
             }
 
-            string sql = "INSERT INTO stock (p_id, w_id, hld) VALUES (@p_id, @w_id, @hld) "
+            var sql = "INSERT INTO stock (p_id, w_id, hld) VALUES (@p_id, @w_id, @hld) "
                          + "ON CONFLICT (p_id, w_id) DO UPDATE SET hld = stock.hld + EXCLUDED.hld";
 
             var recordsAffected = new List<int>();
             foreach (var parameters in parametersList)
             {
-                 recordsAffected.Add(
-                     RunSingleQueryAndReturnRecordsAffected(sql, parameters)
-                 );
+                recordsAffected.Add(
+                    RunSingleQueryAndReturnRecordsAffected(sql, parameters)
+                );
             }
 
             string errorMessage = null;
 
-            for (int i = 0; i < recordsAffected.Count; i++)
+            for (var i = 0; i < recordsAffected.Count; i++)
             {
                 if (recordsAffected[i] == 0)
                 {
-                    errorMessage = String.Format("Product {0} in warehouse {1} was unexpectedly not updated (rows updated returned {2})",
+                    errorMessage = string.Format("Product {0} in warehouse {1} was unexpectedly not updated (rows updated returned {2})",
                         parametersList[i][0], warehouseId, recordsAffected[i]);
                 }
             }
@@ -103,7 +101,7 @@ namespace ShipIt.Repositories
 
         public void RemoveStock(int warehouseId, List<StockAlteration> lineItems)
         {
-            string sql = string.Format("UPDATE stock SET hld = hld - @hld WHERE w_id = {0} AND p_id = @p_id",
+            var sql = string.Format("UPDATE stock SET hld = hld - @hld WHERE w_id = {0} AND p_id = @p_id",
                 warehouseId);
 
             var parametersList = new List<NpgsqlParameter[]>();

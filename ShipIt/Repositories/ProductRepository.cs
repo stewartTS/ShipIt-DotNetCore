@@ -1,10 +1,9 @@
-﻿﻿using System;
+﻿using Npgsql;
+using ShipIt.Exceptions;
+using ShipIt.Models.DataModels;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Npgsql;
-using ShipIt.Exceptions;
-using ShipIt.Models.DataModels;
 
 namespace ShipIt.Repositories
 {
@@ -22,14 +21,14 @@ namespace ShipIt.Repositories
     {
         public int GetCount()
         {
-            string EmployeeCountSQL = "SELECT COUNT(*) FROM gcp";
-            return (int) QueryForLong(EmployeeCountSQL);
+            var EmployeeCountSQL = "SELECT COUNT(*) FROM gcp";
+            return (int)QueryForLong(EmployeeCountSQL);
         }
 
         public ProductDataModel GetProductByGtin(string gtin)
         {
 
-            string sql = "SELECT p_id, gtin_cd, gcp_cd, gtin_nm, m_g, l_th, ds, min_qt FROM gtin WHERE gtin_cd = @gtin_cd";
+            var sql = "SELECT p_id, gtin_cd, gcp_cd, gtin_nm, m_g, l_th, ds, min_qt FROM gtin WHERE gtin_cd = @gtin_cd";
             var parameter = new NpgsqlParameter("@gtin_cd", gtin);
             return base.RunSingleGetQuery(sql, reader => new ProductDataModel(reader),
                 string.Format("No products found with gtin of value {0}", gtin), parameter);
@@ -38,25 +37,25 @@ namespace ShipIt.Repositories
         public IEnumerable<ProductDataModel> GetProductsByGtin(List<string> gtins)
         {
 
-            string sql = String.Format("SELECT p_id, gtin_cd, gcp_cd, gtin_nm, m_g, l_th, ds, min_qt FROM gtin WHERE gtin_cd IN ('{0}')", 
-                String.Join("','", gtins));
+            var sql = string.Format("SELECT p_id, gtin_cd, gcp_cd, gtin_nm, m_g, l_th, ds, min_qt FROM gtin WHERE gtin_cd IN ('{0}')",
+                string.Join("','", gtins));
             return base.RunGetQuery(sql, reader => new ProductDataModel(reader), "No products found with given gtin ids", null);
         }
 
         public ProductDataModel GetProductById(int id)
         {
 
-            string sql = "SELECT p_id, gtin_cd, gcp_cd, gtin_nm, m_g, l_th, ds, min_qt FROM gtin WHERE p_id = @p_id";
+            var sql = "SELECT p_id, gtin_cd, gcp_cd, gtin_nm, m_g, l_th, ds, min_qt FROM gtin WHERE p_id = @p_id";
             var parameter = new NpgsqlParameter("@p_id", id);
-            string noProductWithIdErrorMessage = string.Format("No products found with id of value {0}", id.ToString());
+            var noProductWithIdErrorMessage = string.Format("No products found with id of value {0}", id.ToString());
             return RunSingleGetQuery(sql, reader => new ProductDataModel(reader), noProductWithIdErrorMessage, parameter);
         }
 
         public void DiscontinueProductByGtin(string gtin)
         {
-            string sql = "UPDATE gtin SET ds = 1 WHERE gtin_cd = @gtin_cd";
+            var sql = "UPDATE gtin SET ds = 1 WHERE gtin_cd = @gtin_cd";
             var parameter = new NpgsqlParameter("@gtin_cd", gtin);
-            string noProductWithGtinErrorMessage =
+            var noProductWithGtinErrorMessage =
                 string.Format("No products found with gtin of value {0}", gtin.ToString());
 
             RunSingleQuery(sql, noProductWithGtinErrorMessage, parameter);
@@ -64,7 +63,7 @@ namespace ShipIt.Repositories
 
         public void AddProducts(IEnumerable<ProductDataModel> products)
         {
-            string sql = "INSERT INTO gtin (gtin_cd, gcp_cd, gtin_nm, m_g, l_th, ds, min_qt) VALUES (@gtin_cd, @gcp_cd, @gtin_nm, @m_g, @l_th, @ds, @min_qt)";
+            var sql = "INSERT INTO gtin (gtin_cd, gcp_cd, gtin_nm, m_g, l_th, ds, min_qt) VALUES (@gtin_cd, @gcp_cd, @gtin_nm, @m_g, @l_th, @ds, @min_qt)";
 
             var parametersList = new List<NpgsqlParameter[]>();
             var gtins = new List<string>();

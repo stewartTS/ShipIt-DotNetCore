@@ -1,11 +1,8 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using Npgsql;
+﻿using Npgsql;
 using ShipIt.Models.ApiModels;
 using ShipIt.Models.DataModels;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShipIt.Repositories
 {
@@ -20,24 +17,24 @@ namespace ShipIt.Repositories
     {
         public int GetCount()
         {
-            string CompanyCountSQL = "SELECT COUNT(*) FROM gcp";
+            var CompanyCountSQL = "SELECT COUNT(*) FROM gcp";
             return (int)QueryForLong(CompanyCountSQL);
         }
 
         public CompanyDataModel GetCompany(string gcp)
         {
-            string sql =
+            var sql =
                 "SELECT gcp_cd, gln_nm, gln_addr_02, gln_addr_03, gln_addr_04, gln_addr_postalcode, gln_addr_city, contact_tel, contact_mail " +
                 "FROM gcp " +
                 "WHERE gcp_cd = @gcp_cd";
             var parameter = new NpgsqlParameter("@gcp_cd", gcp);
-            string noProductWithIdErrorMessage = string.Format("No companies found with gcp: {0}", gcp);
+            var noProductWithIdErrorMessage = string.Format("No companies found with gcp: {0}", gcp);
             return base.RunSingleGetQuery(sql, reader => new CompanyDataModel(reader), noProductWithIdErrorMessage, parameter);
         }
 
         public void AddCompanies(IEnumerable<Company> companies)
         {
-            string sql =
+            var sql =
                 "INSERT INTO gcp (gcp_cd, gln_nm, gln_addr_02, gln_addr_03, gln_addr_04, gln_addr_postalcode, gln_addr_city, contact_tel, contact_mail) " +
                 "VALUES (@gcp_cd, @gln_nm, @gln_addr_02, @gln_addr_03, @gln_addr_04, @gln_addr_postalcode, @gln_addr_city, @contact_tel, @contact_mail)";
 
