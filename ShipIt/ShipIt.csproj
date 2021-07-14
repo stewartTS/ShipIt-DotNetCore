@@ -22,15 +22,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove=".editorconfig" />
       <None Remove=".env" />
       <Content Include=".env">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <EditorConfigFiles Include=".editorconfig" />
     </ItemGroup>
 
 </Project>
