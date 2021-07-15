@@ -31,38 +31,40 @@ namespace ShipIt.Controllers
         {
             Log.Info("orderIn for warehouseId: " + warehouseId);
 
+            //queries database to get operations manager
             var operationsManager = new Employee(_employeeRepository.GetOperationsManager(warehouseId));
 
-            Log.Debug(string.Format("Found operations manager: {0}", operationsManager));
+            Log.Debug($"Found operations manager: {operationsManager}");
 
-            var allStock = _stockRepository.GetStockByWarehouseId(warehouseId);
+            //queries database to get stock
+            var allStock = _stockRepository.GetStockByWarehouseId(warehouseId).ToList();
+            var allProducts = allStock.Select(stock => new Product(_productRepository.GetProductById(stock.ProductId))).ToList();
+            var allCompanies = allProducts.Select(product => new Company(_companyRepository.GetCompany(product.Gcp))).ToList();
 
             var orderlinesByCompany = new Dictionary<Company, List<InboundOrderLine>>();
-            foreach (var stock in allStock)
+
+            for (var i = 0; i < allStock.Count(); i++)
             {
-                var product = new Product(_productRepository.GetProductById(stock.ProductId));
-                if (stock.held < product.LowerThreshold && !product.Discontinued)
+                if (allStock[i].held < allProducts[i].LowerThreshold && !allProducts[i].Discontinued)
                 {
-                    var company = new Company(_companyRepository.GetCompany(product.Gcp));
+                    var orderQuantity = Math.Max(allProducts[i].LowerThreshold * 3 - allStock[i].held, allProducts[i].MinimumOrderQuantity);
 
-                    var orderQuantity = Math.Max(product.LowerThreshold * 3 - stock.held, product.MinimumOrderQuantity);
-
-                    if (!orderlinesByCompany.ContainsKey(company))
+                    if (!orderlinesByCompany.ContainsKey(allCompanies[i]))
                     {
-                        orderlinesByCompany.Add(company, new List<InboundOrderLine>());
+                        orderlinesByCompany.Add(allCompanies[i], new List<InboundOrderLine>());
                     }
 
-                    orderlinesByCompany[company].Add(
+                    orderlinesByCompany[allCompanies[i]].Add(
                         new InboundOrderLine()
                         {
-                            gtin = product.Gtin,
-                            name = product.Name,
+                            gtin = allProducts[i].Gtin,
+                            name = allProducts[i].Name,
                             quantity = orderQuantity
                         });
                 }
             }
 
-            Log.Debug(string.Format("Constructed order lines: {0}", orderlinesByCompany));
+            Log.Debug($"Constructed order lines: {orderlinesByCompany}");
 
             var orderSegments = orderlinesByCompany.Select(ol => new OrderSegment()
             {
