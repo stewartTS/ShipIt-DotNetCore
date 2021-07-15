@@ -6,7 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Models" />
       <Folder Include="obj\Debug\netcoreapp3.1" />
     </ItemGroup>
 
@@ -22,10 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove=".env" />
-      <Content Include=".env">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+      <_ContentIncludedByDefault Remove=".env" />
     </ItemGroup>
 
 </Project>
