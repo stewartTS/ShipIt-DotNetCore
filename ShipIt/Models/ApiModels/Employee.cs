@@ -52,10 +52,10 @@ namespace ShipIt.Models.ApiModels
         public override string ToString()
         {
             return new StringBuilder()
-                    .AppendFormat("name: {0}, ", Name)
-                    .AppendFormat("warehouseId: {0}, ", WarehouseId)
-                    .AppendFormat("role: {0}, ", role)
-                    .AppendFormat("ext: {0}", ext)
+                    .AppendFormat($"name: {Name}, ")
+                    .AppendFormat($"warehouseId: {WarehouseId}, ")
+                    .AppendFormat($"role: {role}, ")
+                    .AppendFormat($"ext: {ext}")
                     .ToString();
         }
     }

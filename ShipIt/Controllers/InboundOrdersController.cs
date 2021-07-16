@@ -39,12 +39,15 @@ namespace ShipIt.Controllers
             //queries database to get stock
             var allStock = _stockRepository.GetStockByWarehouseId(warehouseId).ToList();
             var allStockIds = allStock.Select(stock => stock.ProductId).ToList();
-            var allProductData = _productRepository.GetProductsById(allStockIds);
-            var allProducts = allProductData.Select(product => new Product(product)).ToList();
+            var allProducts = _productRepository
+                .GetProductsById(allStockIds)
+                .Select(product => new Product(product))
+                .ToList();
 
             var allProductGcps = allProducts.Select(product => product.Gcp).ToList();
-            var allCompanyData = _companyRepository.GetCompanies(allProductGcps).ToList();
-            var allCompanies = allCompanyData.Select(company => new Company(company)).ToList();
+            var allCompanies = _companyRepository.GetCompanies(allProductGcps)
+                                .Select(company => new Company(company))
+                                .ToList();
 
             var orderlinesByCompany = new Dictionary<Company, List<InboundOrderLine>>();
 

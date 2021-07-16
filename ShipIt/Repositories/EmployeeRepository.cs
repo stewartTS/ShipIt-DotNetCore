@@ -12,7 +12,8 @@ namespace ShipIt.Repositories
     {
         int GetCount();
         int GetWarehouseCount();
-        EmployeeDataModel GetEmployeeByName(string name);
+        //EmployeeDataModel GetEmployeeByName(string name);
+        IEnumerable<EmployeeDataModel> GetEmployeesByName(string name);
         IEnumerable<EmployeeDataModel> GetEmployeesByWarehouseId(int warehouseId);
         EmployeeDataModel GetOperationsManager(int warehouseId);
         void AddEmployees(IEnumerable<Employee> employees);
@@ -68,12 +69,20 @@ namespace ShipIt.Repositories
             };
         }
 
-        public EmployeeDataModel GetEmployeeByName(string name)
+        //public EmployeeDataModel GetEmployeeByName(string name)
+        //{
+        //    var sql = "SELECT name, w_id, role, ext FROM em WHERE name = @name";
+        //    var parameter = new NpgsqlParameter("@name", name);
+        //    var noProductWithIdErrorMessage = string.Format("No employees found with name: {0}", name);
+        //    return base.RunSingleGetQuery(sql, reader => new EmployeeDataModel(reader), noProductWithIdErrorMessage, parameter);
+        //}
+
+        public IEnumerable<EmployeeDataModel> GetEmployeesByName(string name)
         {
             var sql = "SELECT name, w_id, role, ext FROM em WHERE name = @name";
             var parameter = new NpgsqlParameter("@name", name);
-            var noProductWithIdErrorMessage = string.Format("No employees found with name: {0}", name);
-            return base.RunSingleGetQuery(sql, reader => new EmployeeDataModel(reader), noProductWithIdErrorMessage, parameter);
+            var noProductWithIdErrorMessage = string.Format($"No employees found with name: {name}");
+            return base.RunGetQuery(sql, reader => new EmployeeDataModel(reader), noProductWithIdErrorMessage, parameter);
         }
 
         public IEnumerable<EmployeeDataModel> GetEmployeesByWarehouseId(int warehouseId)
