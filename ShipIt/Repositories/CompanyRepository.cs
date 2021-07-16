@@ -35,6 +35,10 @@ namespace ShipIt.Repositories
 
         public IEnumerable<CompanyDataModel> GetCompanies(List<string> gcps)
         {
+            if(gcps.Count == 0)
+            {
+                return new List<CompanyDataModel>();
+            }
             var sql =
                 $"SELECT gcp_cd, gln_nm, gln_addr_02, gln_addr_03, gln_addr_04, gln_addr_postalcode, gln_addr_city, contact_tel, contact_mail FROM gcp WHERE gcp_cd IN ('{string.Join("','", gcps)}')";
             return base.RunGetQuery(sql, reader => new CompanyDataModel(reader), "No companies found with given gcps", null);
